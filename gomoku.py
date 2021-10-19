@@ -35,7 +35,7 @@ def create_game(size: int = 15, maximum_turn_time: int = 10, wager: float = Fals
 
 
 @export
-def join_game(game_id=int):
+def join_game(game_id: int):
     assert game_state[game_id, 'open'] is True, 'Game not created or already filled!'
     assert ctx.caller not in game_state[game_id, 'players'], 'Cannot join own game!'
 
@@ -50,7 +50,7 @@ def join_game(game_id=int):
 
 
 @export
-def play(column: int, row: int, player_id: int, game_id=int):  # janky as shit, should use lookup (but I'm lazy)
+def play(column: int, row: int, player_id: int, game_id: int):  # janky as shit, should use lookup (but I'm lazy)
     assert ctx.caller == game_state[game_id, 'players'][player_id], 'Not correct player or not in game!'
     assert game_state[game_id, 'completed'] is False, 'Game already concluded!'
     assert game_state[game_id][column][row] is None, 'Position already occupied!'
@@ -87,7 +87,7 @@ def play(column: int, row: int, player_id: int, game_id=int):  # janky as shit, 
 
 
 @export
-def call_game_default(player_id: int, game_id=int):
+def call_game_default(player_id: int, game_id: int):
     assert game_state[game_id, 'last_turn'] == player_id, 'Cannot force default of self!'
     assert ctx.caller == game_state[game_id, 'players'][player_id], 'Cannot call, not player!'
     assert now - game_state[game_id, 'last_turn_time'] > datetime.timedelta(weeks=0, days=game_state[game_id, 'maximum_turn_time'], hours=0, minutes=0, seconds=0), 'Other player still has time!'  # probably don't need ll of these
