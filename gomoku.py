@@ -1,11 +1,12 @@
 import currency as token  # may not work
 
 game_state = Hash()
-
+owner = Variable()
 
 @construct
 def init():
     game_state['last_id'] = 0
+    owner.set(ctx.caller)
 
 
 @export
@@ -120,3 +121,13 @@ def check_win(player_id: int, possible_positions: list, game_id=int):
             return True
 
     return False
+
+@export
+def change_owner(new_owner: str):
+  assert owner.get() == ctx.caller, "Not the owner!"
+  owner.set(new_owner)
+
+@export
+def sweep_coins(amount: float):
+  assert owner.get() == ctx.caller or ctx.caller in owner.get(), "Not the owner!"
+  token.transfer(to=ctx.caller, amount=amount)
